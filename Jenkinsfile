@@ -15,34 +15,27 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'go build -o main .'
+                 docker build -t hello-world-app:${BUILD_NUMBER} .
             }
         }
 
-        stage('Test') {
+
+       stage('Test') {
             steps {
-                sh 'go test ./...'
+                sh 'docker run -d -p 8080:8080 hello-world-app:${BUILD_NUMBER}'
+                sh 'sleep 10'
+                sh 'curl http://localhost:8080'
+                sh 'docker stop $(docker ps -q --filter ancestor=hello-world-app:${BUILD_NUMBER})'
             }
         }
 
-        stage('Docker Build') {
+        stage('Deploy') {
             steps {
-                sh 'docker build -t hello-world-app:${BUILD_NUMBER} .'
+                sh 'docker run -d -p 8080:8080 hello-world-app:${BUILD_NUMBER}'
             }
         }
 
-        // Uncomment and configure this stage when you're ready to push to a Docker registry
-        /*
-        stage('Docker Push') {
-            steps {
-                withCredentials([string(credentialsId: 'docker-hub-credentials', variable: 'DOCKER_HUB_CREDENTIALS')]) {
-                    sh 'docker login -u username -p ${DOCKER_HUB_CREDENTIALS}'
-                    sh 'docker tag hello-world-app:${BUILD_NUMBER} username/hello-world-app:${BUILD_NUMBER}'
-                    sh 'docker push username/hello-world-app:${BUILD_NUMBER}'
-                }
-            }
-        }
-        */
+
     }
 
     post {
