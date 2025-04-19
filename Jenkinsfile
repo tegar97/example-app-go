@@ -1,9 +1,9 @@
 pipeline {
-    agent any
-
-    environment {
-        IMAGE_NAME = 'my-golang-app'
-        CONTAINER_NAME = 'golang-container'
+    agent {
+        dockerfile {
+            filename 'Dockerfile'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
 
     stages {
@@ -13,45 +13,48 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build') {
             steps {
-                script {
-                    docker.build("${IMAGE_NAME}")
-                }
+                sh 'go build -o main .'
             }
         }
 
-        stage('Run Container') {
+        stage('Test') {
             steps {
-                script {
-                    sh "docker run -d --name ${CONTAINER_NAME} ${IMAGE_NAME} tail -f /dev/null"
-                }
+                sh 'go test ./...'
             }
         }
 
-        stage('Build Go Project') {
+        stage('Docker Build') {
             steps {
-                script {
-                    sh "docker exec ${CONTAINER_NAME} go build ./..."
-                }
+                sh 'docker build -t hello-world-app:${BUILD_NUMBER} .'
             }
         }
 
-        stage('Run Tests') {
+        // Uncomment and configure this stage when you're ready to push to a Docker registry
+        /*
+        stage('Docker Push') {
             steps {
-                script {
-                    sh "docker exec ${CONTAINER_NAME} go test ./..."
+                withCredentials([string(credentialsId: 'docker-hub-credentials', variable: 'DOCKER_HUB_CREDENTIALS')]) {
+                    sh 'docker login -u username -p ${DOCKER_HUB_CREDENTIALS}'
+                    sh 'docker tag hello-world-app:${BUILD_NUMBER} username/hello-world-app:${BUILD_NUMBER}'
+                    sh 'docker push username/hello-world-app:${BUILD_NUMBER}'
                 }
             }
         }
+        */
+    }
 
-        stage('Cleanup') {
-            steps {
-                script {
-                    sh "docker stop ${CONTAINER_NAME}"
-                    sh "docker rm ${CONTAINER_NAME}"
-                }
-            }
+    post {
+        always {
+            // Clean up
+            sh 'docker rmi hello-world-app:${BUILD_NUMBER} || true'
+        }
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed!'
         }
     }
 }
