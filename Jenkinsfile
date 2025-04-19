@@ -1,9 +1,9 @@
 pipeline {
-    agent {
-        dockerfile {
-            filename 'Dockerfile'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+    agent any
+
+    environment {
+        IMAGE_NAME = 'my-golang-app'
+        CONTAINER_NAME = 'golang-container'
     }
 
     stages {
@@ -13,48 +13,45 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                sh 'go build -o main .'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'go test ./...'
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t hello-world-app:${BUILD_NUMBER} .'
-            }
-        }
-
-        // Uncomment and configure this stage when you're ready to push to a Docker registry
-        /*
-        stage('Docker Push') {
-            steps {
-                withCredentials([string(credentialsId: 'docker-hub-credentials', variable: 'DOCKER_HUB_CREDENTIALS')]) {
-                    sh 'docker login -u username -p ${DOCKER_HUB_CREDENTIALS}'
-                    sh 'docker tag hello-world-app:${BUILD_NUMBER} username/hello-world-app:${BUILD_NUMBER}'
-                    sh 'docker push username/hello-world-app:${BUILD_NUMBER}'
+                script {
+                    docker.build("${IMAGE_NAME}")
                 }
             }
         }
-        */
-    }
 
-    post {
-        always {
-            // Clean up
-            sh 'docker rmi hello-world-app:${BUILD_NUMBER} || true'
+        stage('Run Container') {
+            steps {
+                script {
+                    sh "docker run -d --name ${CONTAINER_NAME} ${IMAGE_NAME} tail -f /dev/null"
+                }
+            }
         }
-        success {
-            echo 'Build completed successfully!'
+
+        stage('Build Go Project') {
+            steps {
+                script {
+                    sh "docker exec ${CONTAINER_NAME} go build ./..."
+                }
+            }
         }
-        failure {
-            echo 'Build failed!'
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    sh "docker exec ${CONTAINER_NAME} go test ./..."
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    sh "docker stop ${CONTAINER_NAME}"
+                    sh "docker rm ${CONTAINER_NAME}"
+                }
+            }
         }
     }
 }
