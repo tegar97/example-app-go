@@ -16,16 +16,16 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh "docker run -d -p 8080:8080 hello-world-app:${BUILD_NUMBER}"
+                sh "docker run -d -p 3001:3001 hello-world-app:${BUILD_NUMBER}"
                 sh "sleep 10"
-                sh "curl http://localhost:8080"
+                sh "curl http://localhost:3001"
                 sh "docker stop \$(docker ps -q --filter ancestor=hello-world-app:${BUILD_NUMBER})"
             }
         }
 
         stage('Deploy') {
             steps {
-                sh "docker run -d -p 8080:8080 hello-world-app:${BUILD_NUMBER}"
+                sh "docker run -d -p 3001:3001 hello-world-app:${BUILD_NUMBER}"
             }
         }
     }
