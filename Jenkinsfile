@@ -14,16 +14,17 @@ pipeline {
             }
         }
 
-      
-
         stage('Deploy') {
             steps {
+                sh "docker ps -q --filter publish=3001 | xargs -r docker stop"
+                sh "docker ps -a -q --filter publish=3001 | xargs -r docker rm"
                 sh "docker run -d -p 3001:3001 hello-world-app:${BUILD_NUMBER}"
             }
         }
 
-          stage('Test') {
+        stage('Test') {
             steps {
+                sh "sleep 5"
                 sh "curl http://localhost:3001"
             }
         }
