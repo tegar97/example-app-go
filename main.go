@@ -13,7 +13,7 @@ func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 
 // HelloHandler handles requests to the /hello endpoint
 func HelloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World 19293222s")
+	fmt.Fprintf(w, "Hello World 192932222s")
 }
 
 func main() {
