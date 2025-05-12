@@ -8,7 +8,7 @@ import (
 
 // HelloWorldHandler handles requests to the root endpoint
 func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "test webhook")
+	fmt.Fprintf(w, "test webhook paling baru")
 }
 
 // HelloHandler handles requests to the /hello endpoint
