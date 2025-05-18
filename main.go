@@ -8,7 +8,7 @@ import (
 
 // HelloWorldHandler handles requests to the root endpoint
 func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Paling baru22222")
+	fmt.Fprintf(w, "Paling baru22222222222 test")
 }
 
 // HelloHandler handles requests to the /hello endpoint
