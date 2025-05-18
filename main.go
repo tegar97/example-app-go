@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 // HelloWorldHandler handles requests to the root endpoint
 func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "iniii baruuuuweweqewe222	")
+	timestamp := time.Now().Format("2006-01-02 15:04:05")
+	fmt.Fprintf(w, "Update Time : %s", timestamp)
 }
 
 // HelloHandler handles requests to the /hello endpoint
