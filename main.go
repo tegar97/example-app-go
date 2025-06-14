@@ -4,13 +4,20 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
 // HelloWorldHandler handles requests to the root endpoint
 func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
-	fmt.Fprintf(w, "Updat Baru2: %s", timestamp)
+	envValue := os.Getenv("APP_ENV")
+	fmt.Fprintf(w, "Environment Value: %s, Timestamp: %s", envValue, timestamp)
+
+	// evv debug_mode value get
+	debugMode := os.Getenv("DEBUG_MODE")
+	fmt.Fprintf(w, "Debug Mode: %s", debugMode)
+
 }
 
 // HelloHandler handles requests to the /hello endpoint
