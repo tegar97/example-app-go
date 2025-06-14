@@ -15,7 +15,7 @@ func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Environment Value: %s, Timestamp: %s", envValue, timestamp)
 
 	// evv debug_mode value gets
-	fmt.Println("baru")
+	fmt.Fprintf(w, "baru")
 	debugMode := os.Getenv("debug_mode")
 	fmt.Fprintf(w, "Debug Mode: %s", debugMode)
 
