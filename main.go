@@ -20,8 +20,10 @@ func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Debug Mode: %s", debugMode)
 
 	// get list env
-	envList := os.Environ()
-	fmt.Fprintf(w, "Environment List: %s", envList)
+	fmt.Fprintln(w, "\n\nEnvironment List:")
+	for _, env := range os.Environ() {
+		fmt.Fprintln(w, env)
+	}
 
 }
 
