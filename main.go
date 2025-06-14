@@ -10,7 +10,7 @@ import (
 // HelloWorldHandler handles requests to the root endpoint
 func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
-	fmt.Fprintf(w, "Updat enew: %s", timestamp)
+	fmt.Fprintf(w, "Updat Baru: %s", timestamp)
 }
 
 // HelloHandler handles requests to the /hello endpoint
