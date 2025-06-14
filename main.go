@@ -19,6 +19,10 @@ func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
 	debugMode := os.Getenv("debug_mode")
 	fmt.Fprintf(w, "Debug Mode: %s", debugMode)
 
+	// get list env
+	envList := os.Environ()
+	fmt.Fprintf(w, "Environment List: %s", envList)
+
 }
 
 // HelloHandler handles requests to the /hello endpoint
