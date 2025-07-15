@@ -95,7 +95,7 @@ func main() {
 	http.HandleFunc("/metrics", MetricsHandler)
 
 	// Start the server on port 8080
-	fmt.Println("Server starting on port 3001...")
+	fmt.Println("Server startsssing on port 3001...")
 	if err := http.ListenAndServe(":3001", nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
